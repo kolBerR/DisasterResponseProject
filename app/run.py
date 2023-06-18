@@ -30,7 +30,7 @@ engine = create_engine(f'sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('drTable', engine)
 
 # load model
-# model = joblib.load("../models/model.pkl")
+model = joblib.load("../models/model.pkl")
 
 
 # index webpage displays cool visuals and receives user input text for model
@@ -96,7 +96,7 @@ def index():
     # render web page with plotly graphs
     return render_template('master.html', ids=ids, graphJSON=graphJSON)
 
-"""
+
 # web page that handles user query and displays model results
 @app.route('/go')
 def go():
@@ -114,7 +114,7 @@ def go():
         classification_result=classification_results
     )
 
-"""
+
 def main():
     app.run(host='0.0.0.0', port=3001, debug=True)
 
