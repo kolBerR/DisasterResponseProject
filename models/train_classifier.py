@@ -1,14 +1,10 @@
 # import libraries
-import tracemalloc
 
 import sys
 import nltk
-from sklearn.multioutput import MultiOutputClassifier
 nltk.download(['punkt', 'wordnet', 'averaged_perceptron_tagger'])
 
-import re
 import pickle
-import numpy as np
 import pandas as pd
 from sqlalchemy import create_engine, text
 
@@ -53,17 +49,25 @@ def tokenize(text):
 
 
 def build_model():
-    model = Pipeline([
+    pipeline = Pipeline([
         ('vect', CountVectorizer(tokenizer=tokenize)),
         ('tfidf', TfidfTransformer()),
-        ('clf', RandomForestClassifier(n_estimators=10, max_depth=10))
+        ('clf', RandomForestClassifier(n_estimators=8, max_depth=6))
     ])
-    return model
+
+    parameters = {
+    'vect__ngram_range': ((1, 1), (1, 2)),
+    'clf__n_estimators': [6, 10]
+    }
+    cv_model = GridSearchCV(pipeline, param_grid=parameters)
+
+    return cv_model
 
 
 def evaluate_model(model, X_test, Y_test, category_names):
     y_pred=model.predict(X_test)
     print(classification_report(Y_test, y_pred, target_names=category_names))
+    print(pipeline.get_params())
 
 
 def save_model(model, model_filepath):
