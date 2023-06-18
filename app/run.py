@@ -30,7 +30,7 @@ engine = create_engine(f'sqlite:///../data/DisasterResponse.db')
 df = pd.read_sql_table('drTable', engine)
 
 # load model
-model = joblib.load("../models/model.pkl")
+# model = joblib.load("../models/model.pkl")
 
 
 # index webpage displays cool visuals and receives user input text for model
@@ -42,6 +42,9 @@ def index():
     # TODO: Below is an example - modify to extract data for your own visuals
     genre_counts = df.groupby('genre').count()['message']
     genre_names = list(genre_counts.index)
+
+    category_counts = df.iloc[:, 4:].sum()
+    category_names = list(category_counts.index)
     
     # create visuals
     # TODO: Below is an example - modify to create your own visuals
@@ -63,7 +66,27 @@ def index():
                     'title': "Genre"
                 }
             }
+        },
+
+        {
+            'data': [
+                Bar(
+                    x=category_names,
+                    y=category_counts
+                )
+            ],
+
+            'layout': {
+                'title': 'Categories Types',
+                'yaxis': {
+                'title': "Count"
+            },
+                'xaxis': {
+                'title': "Categories"
+                }
+            }
         }
+
     ]
     
     # encode plotly graphs in JSON
@@ -73,7 +96,7 @@ def index():
     # render web page with plotly graphs
     return render_template('master.html', ids=ids, graphJSON=graphJSON)
 
-
+"""
 # web page that handles user query and displays model results
 @app.route('/go')
 def go():
@@ -91,7 +114,7 @@ def go():
         classification_result=classification_results
     )
 
-
+"""
 def main():
     app.run(host='0.0.0.0', port=3001, debug=True)
 
