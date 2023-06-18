@@ -67,7 +67,7 @@ def build_model():
 def evaluate_model(model, X_test, Y_test, category_names):
     y_pred=model.predict(X_test)
     print(classification_report(Y_test, y_pred, target_names=category_names))
-    print(pipeline.get_params())
+    print(model.get_params())
 
 
 def save_model(model, model_filepath):
